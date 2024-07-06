@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import Link from 'next/link';
 import Layout from '../../../components/wrappers/Layout';
 import AdminSidebar from '../../../components/wrappers/AdminSidebar';
@@ -23,6 +25,16 @@ import { useGetOrdersQuery } from '../../api/ordersApi';
 
 export default function Orders() {
   const { data, isLoading } = useGetOrdersQuery('');
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    if (data) {
+      const sortedOrders = [...data.data].sort((a, b) =>
+        b.updated_at.localeCompare(a.updated_at)
+      );
+      setOrders(sortedOrders);
+    }
+  }, [data]);
 
   const statusDict = {
     Processing: 'En Proceso',
@@ -68,11 +80,17 @@ export default function Orders() {
                         <TableHead className='hidden md:table-cell'>
                           Monto
                         </TableHead>
+                        <TableHead className='hidden md:table-cell'>
+                          Fecha Creación
+                        </TableHead>
+                        <TableHead className='hidden md:table-cell'>
+                          Fecha Última Actualización
+                        </TableHead>
                         <TableHead className='text-right' />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data.data.map((order) => (
+                      {orders.map((order) => (
                         <TableRow className='bg-accent'>
                           <TableCell>
                             <div className='font-medium'>{order.id}</div>
@@ -91,7 +109,13 @@ export default function Orders() {
                             </Badge>
                           </TableCell>
                           <TableCell className='hidden md:table-cell'>
-                            ${order.total_amount}
+                            CLP ${order.total_amount}
+                          </TableCell>
+                          <TableCell className='hidden md:table-cell'>
+                            {dayjs(order.created_at).format('DD/MM/YYYY HH:mm')}
+                          </TableCell>
+                          <TableCell className='hidden md:table-cell'>
+                            {dayjs(order.updated_at).format('DD/MM/YYYY HH:mm')}
                           </TableCell>
                           <TableCell className='text-right'>
                             <Link href={`orders/${order.id}`}>

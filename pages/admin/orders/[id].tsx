@@ -99,17 +99,20 @@ export default function OrderDetail() {
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {data.data.order_items.map((item) => (
-                                <TableRow key={item.name}>
-                                  <TableCell className='px-0 font-medium'>
-                                    {item.id}
-                                  </TableCell>
-                                  <TableCell>{item.quantity}</TableCell>
-                                  <TableCell className='px-0 text-right font-bold'>
-                                    ${item.price}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                              {data.data.order_items.map((item) => {
+                                const product = data.products[item.product];
+                                return (
+                                  <TableRow key={item.id}>
+                                    <TableCell className='px-0 font-medium'>
+                                      {product.name}{' '}
+                                    </TableCell>
+                                    <TableCell>{item.quantity}</TableCell>
+                                    <TableCell className='px-0 text-right font-bold'>
+                                      ${item.price}
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
                             </TableBody>
                           </Table>
                           <div className='flex flex-col'>

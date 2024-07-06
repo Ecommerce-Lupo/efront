@@ -10,27 +10,17 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
-import { AiOutlineHeart } from '../../utils/icons';
+import {
+  AiOutlineHeart,
+  FiDollarSign,
+  PiPants,
+  RiMedalLine,
+  CiCalculator1,
+} from '../../utils/icons';
 
 export default function Analytics() {
-  // const { data, isLoading } = useGetMetricsQuery('');
+  const { data } = useGetMetricsQuery('');
 
-  const data = {
-    data: {
-      revenue: 269683,
-      total_sold_products: 0,
-      highest_sold_product: 'Polerón Naranjo',
-      average_order_value: 15863,
-      price_distribution: [
-        15000, 24990, 23990, 19990, 35990, 19990, 19990, 34990, 39990,
-      ],
-    },
-  };
-  const numbers = [
-    15000, 24990, 23990, 19990, 35990, 19990, 19990, 34990, 39990,
-  ];
-
-  // Función para contar la frecuencia de los números
   const calculateFrequency = (series) => {
     const frequency = {};
     series.forEach((num) => {
@@ -42,9 +32,10 @@ export default function Analytics() {
     }));
   };
 
-  const frequencyData = calculateFrequency(numbers);
+  const frequencyData = data
+    ? calculateFrequency(data.data.price_distribution)
+    : [];
 
-  // Función para formatear los valores a CLP
   const CLPFormatter = (value) => `CLP $${value}`;
 
   const Histogram = () => (
@@ -77,7 +68,7 @@ export default function Analytics() {
   );
 
   if (!data) {
-    return <div>Loading...</div>; // Renderizar un estado de carga hasta que los datos estén disponibles
+    return <div>Loading...</div>;
   }
 
   return (
@@ -94,22 +85,19 @@ export default function Analytics() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className='flex flex-col gap-4'>
+                  <div className='flex flex-col gap-4 p-4'>
                     <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
                       <Card x-chunk='dashboard-01-chunk-0'>
                         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                           <CardTitle className='text-sm font-medium'>
                             Ganancias Totales
                           </CardTitle>
-                          <AiOutlineHeart className='text-muted-foreground h-4 w-4' />
+                          <FiDollarSign className='text-muted-foreground h-4 w-4' />
                         </CardHeader>
                         <CardContent className='p-5 pt-0'>
                           <div className='text-2xl font-bold'>
                             CLP ${data.data.revenue}
                           </div>
-                          <h1 className='text-muted-foreground text-xs'>
-                            +20.1% from last month
-                          </h1>
                         </CardContent>
                       </Card>
                       <Card x-chunk='dashboard-01-chunk-1'>
@@ -117,15 +105,12 @@ export default function Analytics() {
                           <CardTitle className='text-sm font-medium'>
                             Total de Productos Vendidos
                           </CardTitle>
-                          <AiOutlineHeart className='text-muted-foreground h-4 w-4' />
+                          <PiPants className='text-muted-foreground h-4 w-4' />
                         </CardHeader>
                         <CardContent className='p-5 pt-0'>
                           <div className='text-2xl font-bold'>
                             {data.data.total_sold_products}
                           </div>
-                          <h1 className='text-muted-foreground text-xs'>
-                            +180.1% from last month
-                          </h1>
                         </CardContent>
                       </Card>
                       <Card x-chunk='dashboard-01-chunk-2'>
@@ -133,14 +118,15 @@ export default function Analytics() {
                           <CardTitle className='text-sm font-medium'>
                             Producto más Vendido
                           </CardTitle>
-                          <AiOutlineHeart className='text-muted-foreground h-4 w-4' />
+                          <RiMedalLine className='text-muted-foreground h-4 w-4' />
                         </CardHeader>
                         <CardContent className='p-5 pt-0'>
                           <div className='text-2xl font-bold'>
-                            {data.data.highest_sold_product}
+                            {data.data.highest_sold_product.name}
                           </div>
                           <h1 className='text-muted-foreground text-xs'>
-                            +19% from last month
+                            Cantidad vendida:{' '}
+                            {data.data.highest_sold_product.quantity_sold}
                           </h1>
                         </CardContent>
                       </Card>
@@ -149,15 +135,12 @@ export default function Analytics() {
                           <CardTitle className='text-sm font-medium'>
                             Valor promedio de orden
                           </CardTitle>
-                          <AiOutlineHeart className='text-muted-foreground h-4 w-4' />
+                          <CiCalculator1 className='text-muted-foreground h-4 w-4' />
                         </CardHeader>
                         <CardContent className='p-5 pt-0'>
                           <div className='text-2xl font-bold'>
                             CLP ${data.data.average_order_value}
                           </div>
-                          <h1 className='text-muted-foreground text-xs'>
-                            +201 since last hour
-                          </h1>
                         </CardContent>
                       </Card>
                     </div>
