@@ -86,6 +86,18 @@ const NavigationMenuItemWithContent = ({
 ); */
 
 const Navbar = () => {
+  const auth = useSelector(
+    (store: {
+      auth: {
+        user: null | {
+          access: string;
+          user: { username: string; email: string; is_superuser: boolean };
+        };
+        isAuthenticated: boolean;
+      };
+    }) => store.auth
+  );
+
   // TODO: search why is needed the cartItemCount
   const { cartItems } = useSelector(
     (state: { shopCart: any }) => state.shopCart
@@ -171,11 +183,13 @@ const Navbar = () => {
               )}
             </div>
           </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href='/admin/orders'>
-              <IoBarChartOutline size={20} />
-            </Link>
-          </NavigationMenuItem>
+          {auth.user?.user.is_superuser && (
+            <NavigationMenuItem>
+              <Link href='/admin/orders'>
+                <IoBarChartOutline size={20} />
+              </Link>{' '}
+            </NavigationMenuItem>
+          )}
         </NavigationMenuList>
       </NavigationMenu>
       {isOpenCart && <ShopCart setIsOpen={setIsOpenCart} isOpen={isOpenCart} />}

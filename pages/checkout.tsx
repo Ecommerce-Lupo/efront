@@ -104,7 +104,13 @@ export default function Checkout() {
 
   function calculateTotal() {
     const sub = cartItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
+      (acc, item) =>
+        acc +
+        item.price *
+          item.quantity *
+          (item.discount_percentage > 0
+            ? (100 - item.discount_percentage) / 100
+            : 1),
       0
     );
     setSubtotal(sub);
@@ -120,6 +126,8 @@ export default function Checkout() {
       size: item.size,
       quantity: item.quantity,
       color: '',
+      price: item.price,
+      discount_percentage: item.discount_percentage,
     }));
     setCart(cartData);
   }
@@ -222,7 +230,15 @@ export default function Checkout() {
                       </TableCell>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell className='px-0 text-right font-bold'>
-                        ${item.price}
+                        {item.discount_percentage > 0 ? (
+                          <span>
+                            CLP $
+                            {item.price *
+                              ((100 - item.discount_percentage) / 100)}
+                          </span>
+                        ) : (
+                          <span>CLP ${item.price}</span>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

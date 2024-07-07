@@ -134,7 +134,7 @@ export default function Users() {
                           </TableCell>
                           <TableCell className='hidden sm:table-cell'>
                             <Badge className='text-xs' variant='secondary'>
-                              ${user.balance}
+                              CLP ${user.balance}
                             </Badge>
                           </TableCell>
                           <TableCell className='text-right'>

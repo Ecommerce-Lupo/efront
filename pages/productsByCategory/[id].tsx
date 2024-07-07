@@ -83,6 +83,11 @@ const ProductsByCategory = () => {
                       <Card className='cursor-pointer rounded-none border-0 bg-[#F7F7F7]'>
                         <CardContent className='flex h-[20rem] px-0'>
                           <div className='relative h-[18rem] w-[15rem]'>
+                            {product.discount_percentage > 0 && (
+                              <div className='absolute left-2 top-2 z-10 rounded bg-red-500 px-2 py-1 text-xs text-white'>
+                                -{product.discount_percentage}%
+                              </div>
+                            )}
                             <Image
                               src={
                                 product.image
@@ -93,6 +98,7 @@ const ProductsByCategory = () => {
                               quality={100}
                               sizes='50vw'
                               fill
+                              className='z-0'
                             />
                           </div>
                         </CardContent>
@@ -101,9 +107,27 @@ const ProductsByCategory = () => {
                           <p className='text-[0.7rem] text-slate-500'>
                             {product.description}
                           </p>
-                          <p className='text-[0.7rem] font-bold'>
-                            CLP ${product.price}
-                          </p>
+                          <div className='flex items-center gap-2'>
+                            {product.discount_percentage > 0 && (
+                              <>
+                                <p className='text-[0.7rem] text-red-500 line-through'>
+                                  CLP ${product.price}
+                                </p>
+                                <p className='text-[0.7rem] font-bold'>
+                                  CLP $
+                                  {(
+                                    product.price *
+                                    (1 - product.discount_percentage / 100)
+                                  ).toFixed(0)}
+                                </p>
+                              </>
+                            )}
+                            {product.discount_percentage === 0 && (
+                              <p className='text-[0.7rem] font-bold'>
+                                CLP ${product.price}
+                              </p>
+                            )}
+                          </div>
                         </CardFooter>
                       </Card>
                     </Link>

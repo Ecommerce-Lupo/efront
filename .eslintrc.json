@@ -21,7 +21,8 @@
   ],
   "ignorePatterns": [
     "**/*.js",
-    "**/*.json"
+    "**/*.json",
+    "cypress/*"
   ],
   "rules": {
     "prettier/prettier": ["error"],
@@ -30,6 +31,7 @@
     "react/react-in-jsx-scope": "off",
     "react/no-unstable-nested-components": "off",
     "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
     "react/function-component-definition": "off",
     "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}],
     "vitest/vitest-in-dependencies": "off",

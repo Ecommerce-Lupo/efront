@@ -38,6 +38,7 @@ const ProductDetail = () => {
       image: productDetail.image,
       size: selectedSize,
       quantity: 1,
+      discount_percentage: productDetail.discount_percentage,
     };
     dispatch(setCartItem(cartItem));
   };
@@ -82,9 +83,26 @@ const ProductDetail = () => {
               <h2 className='text-[0.5rem] text-slate-400'>
                 {productDetail.description.toUpperCase()}
               </h2>
-              <p className='text-[0.6rem] font-bold'>
-                CLP${productDetail.price}
-              </p>
+              <div className='flex items-center gap-2'>
+                {productDetail.discount_percentage > 0 ? (
+                  <>
+                    <h2 className='text-xs text-red-500 line-through'>
+                      CLP ${productDetail.price}
+                    </h2>
+                    <h2 className='text-xs font-bold'>
+                      CLP $
+                      {(
+                        productDetail.price *
+                        (1 - productDetail.discount_percentage / 100)
+                      ).toFixed(0)}
+                    </h2>
+                  </>
+                ) : (
+                  <h2 className='text-xs text-black'>
+                    CLP ${productDetail.price}
+                  </h2>
+                )}
+              </div>
               <div className='flex flex-row gap-x-10 py-8'>
                 <FaRegHeart className='cursor-pointer' />
                 <FaRegCopy

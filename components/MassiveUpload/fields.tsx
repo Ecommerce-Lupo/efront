@@ -4,7 +4,7 @@ export const productsFields: Fields<unknown> = [
   {
     label: 'Nombre del Producto',
     example: 'Polera',
-    key: 'productName',
+    key: 'name',
     alternateMatches: ['nombre', 'productos'],
     fieldType: { type: 'input' },
     editable: true,
@@ -25,8 +25,7 @@ export const productsFields: Fields<unknown> = [
     validations: [
       {
         rule: 'required',
-        errorMessage:
-          'La columna "Codigo Identificación Fiscal Compañía" es requerida.',
+        errorMessage: 'La columna "Descripción" es requerida.',
         level: 'error',
       },
     ],
@@ -54,7 +53,7 @@ export const productsFields: Fields<unknown> = [
   },
   {
     label: 'Tamaño',
-    example: 'M',
+    example: 'XL',
     key: 'size',
     alternateMatches: ['tamaño', 'Tamaño'],
     fieldType: { type: 'input' },
@@ -62,8 +61,22 @@ export const productsFields: Fields<unknown> = [
   {
     label: 'Stock',
     example: '100',
-    key: 'stock',
+    key: 'quantity',
     alternateMatches: ['stock', 'Stock'],
+    fieldType: { type: 'input' },
+  },
+  {
+    label: 'Género',
+    example: 'Female',
+    key: 'gender',
+    alternateMatches: ['genero', 'Genero', 'Género', 'género'],
+    fieldType: { type: 'input' },
+  },
+  {
+    label: 'Color',
+    example: 'Black',
+    key: 'color',
+    alternateMatches: ['color', 'Color'],
     fieldType: { type: 'input' },
   },
 ];

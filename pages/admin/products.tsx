@@ -53,6 +53,7 @@ import {
   useGetProductsQuery,
   useDeleteProductMutation,
   useUpdateProductMutation,
+  useUpdateDiscountMutation,
 } from '../api/productsApi';
 import { toast } from '../../components/ui/use-toast';
 
@@ -60,8 +61,10 @@ export default function Products() {
   const { data, isLoading } = useGetProductsQuery('');
   const [products, setProducts] = useState([]);
   const [selectedQuantity, setSelectedQuantity] = useState(0);
+  const [selectedDiscount, setSelectedDiscount] = useState(0);
   const [deleteProductMutation] = useDeleteProductMutation();
   const [updateProductMutation] = useUpdateProductMutation();
+  const [updateDiscountMutation] = useUpdateDiscountMutation();
 
   useEffect(() => {
     if (data) {
@@ -115,6 +118,38 @@ export default function Products() {
       });
   }
 
+  function handleUpdateDiscountStock(product_id, discount_percentage) {
+    if (discount_percentage > 100 || discount_percentage < 0) {
+      toast({
+        title: 'Error al actualizar el descuento',
+        description: 'El descuento debe ser un número entre 0 y 100',
+      });
+      return;
+    }
+    const product = { id: product_id, discount: discount_percentage };
+    updateDiscountMutation(product)
+      .unwrap()
+      .then(() => {
+        const updatedProducts = products.map((product) => {
+          if (product.id === product_id) {
+            return { ...product, discount_percentage };
+          }
+          return product;
+        });
+        setProducts(updatedProducts);
+        toast({
+          title: 'Descuento actualizado con éxito',
+          description: 'El descuento ha sido actualizado exitosamente',
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: 'Error al actualizar el descuento',
+          description: `Intenta nuevamente, error: ${JSON.stringify(error)}`,
+        });
+      });
+  }
+
   if (isLoading) {
     return (
       <div className='flex justify-center'>
@@ -160,6 +195,9 @@ export default function Products() {
                           <TableHead className='hidden sm:table-cell'>
                             Stock
                           </TableHead>
+                          <TableHead className='hidden sm:table-cell'>
+                            Descuento
+                          </TableHead>
                           <TableHead className='text-right' />
                         </TableRow>
                       </TableHeader>
@@ -174,7 +212,7 @@ export default function Products() {
                               </div>
                             </TableCell>
                             <TableCell className='hidden sm:table-cell'>
-                              CLP {product.price}
+                              CLP ${product.price}
                             </TableCell>
                             <TableCell className='hidden sm:table-cell'>
                               {product.category}
@@ -192,6 +230,62 @@ export default function Products() {
                               <Badge className='text-xs' variant='secondary'>
                                 {product.quantity}
                               </Badge>
+                            </TableCell>
+                            <TableCell className='hidden sm:table-cell'>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Badge className='text-xs'>
+                                    {product.discount_percentage}%
+                                  </Badge>
+                                </DialogTrigger>
+                                <DialogContent className='sm:max-w-[425px]'>
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Actualizar descuento de {product.name}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Ingresa el nuevo descuento del producto
+                                      (0-100)
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className='grid gap-4 py-4'>
+                                    <div className='grid grid-cols-4 items-center gap-4'>
+                                      <Label
+                                        htmlFor='name'
+                                        className='text-right'
+                                      >
+                                        Nuevo Descuento
+                                      </Label>
+                                      <Input
+                                        id='name'
+                                        className='col-span-3'
+                                        type='number'
+                                        min='0'
+                                        max='100'
+                                        defaultValue={
+                                          product.discount_percentage
+                                        }
+                                        onChange={(e) =>
+                                          setSelectedDiscount(e.target.value)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <DialogFooter>
+                                    <Button
+                                      type='submit'
+                                      onClick={() =>
+                                        handleUpdateDiscountStock(
+                                          product.id,
+                                          selectedDiscount
+                                        )
+                                      }
+                                    >
+                                      Actualizar{' '}
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
                             </TableCell>
                             <TableCell>
                               <Dialog>

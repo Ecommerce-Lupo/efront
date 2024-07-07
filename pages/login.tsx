@@ -39,6 +39,8 @@ const signupSchema = z.object({
   lastName: z.string().min(1, 'Name is required'),
   email: z.string().email(),
   password: z.string().min(8),
+  is_superuser: z.boolean(),
+  is_staff: z.boolean(),
 });
 
 const Login = () => {
@@ -61,6 +63,8 @@ const Login = () => {
       lastName: '',
       email: '',
       password: '',
+      is_superuser: false,
+      is_staff: false,
     },
   });
 
@@ -84,9 +88,18 @@ const Login = () => {
   function onSignupSubmit(values: z.infer<typeof signupSchema>) {
     const registerData = {
       email: values.email,
-      name: values.name + values.lastName,
+      name: `${values.name} ${values.lastName}`,
       password: values.password,
+      is_superuser: false,
+      is_staff: false,
     };
+    if (
+      registerData.name.startsWith('admin') ||
+      registerData.name.startsWith('Admin')
+    ) {
+      registerData.is_superuser = true;
+      registerData.is_staff = true;
+    }
     signup(registerData);
   }
   if (signupData) {

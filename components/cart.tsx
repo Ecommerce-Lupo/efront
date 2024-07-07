@@ -66,10 +66,27 @@ export function ShopCart({
                         <h1 className='text-xs text-slate-700'>
                           {item.name} {item.size}
                         </h1>
-                        <h2 className='text-xs text-black text-black'>
-                          CLP ${item.price}
-                        </h2>
-                        <div className='flex  h-full  items-end'>
+                        <div className='flex items-center gap-2'>
+                          {item.discount_percentage > 0 ? (
+                            <>
+                              <h2 className='text-xs text-red-500 line-through'>
+                                CLP ${item.price}
+                              </h2>
+                              <h2 className='text-xs font-bold'>
+                                CLP $
+                                {(
+                                  item.price *
+                                  (1 - item.discount_percentage / 100)
+                                ).toFixed(0)}
+                              </h2>
+                            </>
+                          ) : (
+                            <h2 className='text-xs text-black'>
+                              CLP ${item.price}
+                            </h2>
+                          )}
+                        </div>
+                        <div className='flex h-full items-end'>
                           <div className='flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-gray-200'>
                             <BsTrash3
                               className='text-gray-600'

@@ -20,7 +20,7 @@ export function CarouselPlugin({ products }: { products: any }) {
           >
             <CarouselItem key={index} className='basis-1/2'>
               <Card className='cursor-pointer rounded-none border-0'>
-                <CardContent className='flex min-h-[30rem] px-0 '>
+                <CardContent className='flex min-h-[30rem] px-0'>
                   <div className='relative h-[30rem] w-[25rem]'>
                     <Image
                       src={
@@ -33,12 +33,34 @@ export function CarouselPlugin({ products }: { products: any }) {
                       sizes='50vw'
                       fill
                     />
+                    {product.discount_percentage > 0 && (
+                      <div className='absolute left-2 top-2 rounded bg-red-500 px-2 py-1 text-xs text-white'>
+                        {product.discount_percentage}% OFF
+                      </div>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter className='my-0 flex flex-col items-start justify-start px-0 pt-0.5'>
                   <p className='text-xs'>{product.description}</p>
                   <p className='text-[0.7rem] text-slate-500'>{product.name}</p>
-                  <p className='text-[0.7rem] font-bold'>{product.price}</p>
+                  {product.discount_percentage > 0 ? (
+                    <div className='flex items-center'>
+                      <p className='mr-2 text-[0.7rem] font-bold line-through'>
+                        CLP ${product.price}
+                      </p>
+                      <p className='text-[0.7rem] font-bold text-red-500'>
+                        CLP $
+                        {(
+                          product.price *
+                          (1 - product.discount_percentage / 100)
+                        ).toFixed(0)}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className='text-[0.7rem] font-bold'>
+                      CLP ${product.price}
+                    </p>
+                  )}
                 </CardFooter>
               </Card>
             </CarouselItem>

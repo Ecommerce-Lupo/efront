@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/jsx-props-no-spreading */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
@@ -6,7 +7,10 @@ import { z } from 'zod';
 import { useState } from 'react';
 import Layout from '../../components/wrappers/Layout';
 import { Button } from '../../components/ui/button';
-import { useCreateProductMutation } from '../api/productsApi';
+import {
+  useCreateProductMutation,
+  useCreateMassiveUploadMutation,
+} from '../api/productsApi';
 import {
   Card,
   CardContent,
@@ -74,6 +78,7 @@ const FormSchema = z.object({
 export default function NewProduct() {
   const [openMassiveUpload, setOpenMassiveUpload] = useState(false);
   const [createProduct] = useCreateProductMutation();
+  const [createMassiveUpload] = useCreateMassiveUploadMutation();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -117,6 +122,25 @@ export default function NewProduct() {
         toast({
           title: 'Error',
           description: `Error al crear el producto: ${error.message}`,
+        });
+      });
+  }
+
+  function handleOnSubmitMassive(data: FormData) {
+    const body = { products: data.validData };
+    createMassiveUpload(body)
+      .unwrap()
+      .then(() => {
+        toast({
+          title: 'Productos creados masivamente con éxito',
+          description: `Los productos han sido creados exitosamente`,
+        });
+        router.push('../admin/products');
+      })
+      .catch((error) => {
+        toast({
+          title: 'Error',
+          description: `Error al crear los productos: ${error.message}`,
         });
       });
   }
@@ -482,6 +506,7 @@ export default function NewProduct() {
         <MassiveProductsUpload
           isOpen={openMassiveUpload}
           setIsOpen={setOpenMassiveUpload}
+          handleOnSubmit={handleOnSubmitMassive}
         />
       ) : null}
     </Layout>

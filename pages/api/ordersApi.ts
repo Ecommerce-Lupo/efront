@@ -1,14 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { useUserToken } from './tokenHooks';
 
 export const ordersApi = createApi({
   reducerPath: 'ordersApi',
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/orders`,
-    prepareHeaders: (headers) => {
+    prepareHeaders: (headers, { getState = useUserToken }) => {
       // TODO get token from local storage
-      const token = process.env.NEXT_PUBLIC_TOKEN;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+      // const token = process.env.NEXT_PUBLIC_TOKEN;
+      const user = getState();
+      if (user) {
+        headers.set('Authorization', `Bearer ${user.auth?.user.access}`);
       }
       headers.set('Content-Type', 'application/json');
       return headers;
